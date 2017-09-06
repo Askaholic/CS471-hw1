@@ -2,57 +2,31 @@
 // Rohan Weeden
 // Created: August 29, 2017
 
-// Test cases for quicksort algorithm
+// Implementation of quicksort algorithm with Lomuto partition scheme
 #include <vector>
-#include <iostream>
-#include "quicksort.hpp"
+#include <algorithm>
 
 template <typename T>
-void printVector(std::vector<T> &);
-
-template <typename T>
-bool isSorted(std::vector<T> &);
-
-int main(int argc, char const *argv[]) {
-  std::vector<std::vector<int>> tests {
-    {10, 50, 100, -30, -70, 1000, -1234},
-    {1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 5, 6, 7},
-    {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5},
-    {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, 0},
-    {0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {17673, 36802, -2086, 66159, -73747, 80703, -19613}
-  };
-  for (int c = 0; c < tests.size(); c++) {
-    std::vector<int> &v = tests[c];
-    printVector(v);
-    quicksort(v, 0, v.size() - 1);
-    printVector(v);
-    std::cout << ((isSorted(v)) ? ("OK") : ("FAILED")) << std::endl;
-    std::cout << "----------------------\n\n";
+int partition(std::vector<T> &A, int lo, int hi) {
+  int pivot = A[hi];
+  int i = lo - 1;
+  for (int j = lo; j < hi; ++j) {
+    if (A[j] < pivot) {
+      i = i + 1;
+      std::swap(A[i], A[j]);
+    }
   }
-  return 0;
+  if (A[hi] < A[i + 1]) {
+    std::swap(A[i + 1], A[hi]);
+  }
+  return i + 1;
 }
 
 template <typename T>
-void printVector(std::vector<T> &v) {
-  std::cout << "[";
-  for(int c = 0; c < v.size(); c++) {
-    if (c != 0) {
-      std::cout << ",";
-    }
-    std::cout << v[c];
+void quicksort(std::vector<T> &A, int lo, int hi) {
+  if (lo < hi) {
+    int p = partition(A, lo, hi);
+    quicksort(A, lo, p - 1);
+    quicksort(A, p + 1, hi);
   }
-  std::cout << "]" << std::endl;
-}
-
-template <typename T>
-bool isSorted(std::vector<T> &v) {
-  for (int i = 0; i < v.size() - 1; i++) {
-    if (v[i] > v[i + 1]) {
-      return false;
-    }
-  }
-  return true;
 }
